@@ -1,0 +1,6 @@
+pymongo
+flask
+bson
+flask-restful
+Flask-HTTPAuth==2.2.0
+itsdangerous==0.23
