@@ -1,6 +1,7 @@
 from flask.ext.restful import reqparse
 from flask.ext.httpauth import HTTPBasicAuth
-from flask import Response, abort, g
+
+from flask import g
 
 from models.user import User as Umodel
 

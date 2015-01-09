@@ -1,35 +1,78 @@
 from abc import ABCMeta, abstractmethod
+from bson.objectid import ObjectId
+from datetime import datetime
+
+
+class ModellingContract(object):
+
+    @staticmethod
+    def device_jsonify(did, name, location):
+        return {'_id': ObjectId(did),
+                'name': name,
+                'location': location,
+                }
+
+    @staticmethod
+    def patient_jsonify(bracelet, firstname, lastname, age, weight,
+                        min_consuption_day, consuption, alert):
+        return {'_id': ObjectId(),
+                'bracelet': bracelet,
+                'firstname': firstname,
+                'lastname': lastname,
+                'age': age,
+                'weight': weight,
+                'min_consuption_day': min_consuption_day,
+                'consumptions': consuption,
+                'alerts': alert
+                }
+
+    @staticmethod
+    def alert_jsonify(level, device):
+        return {'_id': ObjectId(),
+                'date': datetime.utcnow(),
+                'level': level,
+                'device': ObjectId(device)
+                }
+
+    @staticmethod
+    def consuption_jsonify(quantity, device):
+        return {'_id': ObjectId(),
+                'date': datetime.utcnow(),
+                'quantity': quantity,
+                'device': ObjectId(device)
+                }
 
 
 class DeviceContract(object):
     __metaclass__ = ABCMeta
 
-    @abstractmethod
-    def get_last_devices(self, limit):
-        pass
+    def jsonify(self, did, name, location):
+        return ModellingContract.device_jsonify(did, name, location)
 
-    @abstractmethod
-    def get_device(self, _id):
-        pass
 
-    @abstractmethod
-    def save_device(self, name, location, ns, patient_firstname,
-                    patient_lastname, patient_age):
-        pass
+class PatientContract(object):
+    __metaclass__ = ABCMeta
 
-    @abstractmethod
-    def remove_device(self, _id):
-        pass
+    def jsonify(self, bracelet, firstname, lastname, age, weight,
+                min_consuption_day, consuption, alert):
+        return ModellingContract.patient_jsonify(bracelet, firstname, lastname,
+                                                 age, weight,
+                                                 min_consuption_day,
+                                                 consuption, alert)
 
-    def jsonify(self, name, location, ns, patient_firstname,
-                patient_lastname, patient_age):
-        return {'name': name,
-                'location': location,
-                'ns': ns,
-                'patient': {'firstname': patient_firstname,
-                            'lastname': patient_lastname,
-                            'age': patient_age
-                            }}
+
+class AlertContract(object):
+    __metaclass__ = ABCMeta
+
+    def jsonify(self, level, device):
+        return ModellingContract.alert_jsonify(level, device)
+
+
+class ConsuptionContract(object):
+    __metaclass__ = ABCMeta
+
+    def jsonify(self, quantity, device):
+        return ModellingContract.consuption_jsonify(quantity, device)
 
 
 class UserContract(object):
@@ -41,4 +84,5 @@ class UserContract(object):
     def jsonify(self, name, password, mail):
         return {'name': name,
                 'password': password,
-                'mail': mail}
+                'mail': mail
+                }
