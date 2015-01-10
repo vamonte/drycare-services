@@ -22,7 +22,7 @@ class User(Base):
         return pwd_context.encrypt(password)
 
     def verify_password(self, password):
-        return pwd_context.verify(self.password, self.hash_password(password))
+        return pwd_context.verify(password, self.password)
 
     def generate_auth_token(self, expiration=600):
         s = Serializer(self.SECRET_KEY, expires_in=expiration)
@@ -30,8 +30,8 @@ class User(Base):
 
     @classmethod
     def save(cls, name, password, mail):
-        hash_password = cls.hash_password(password)
-        return cls.wrapper().save(name, hash_password, mail)
+        passw = cls.hash_password(password)
+        return cls.wrapper().save(name, passw, mail)
 
     @classmethod
     def get_by_id(cls, uid):
