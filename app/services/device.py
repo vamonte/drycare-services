@@ -74,16 +74,18 @@ class Device(BaseService):
 
     @auth.login_required
     def put(self, did):
+        _id = did
         kwargs = self.put_parser.parse_args()
         if not(kwargs.get('name') or kwargs.get('location')):
             abort(404)
-        return self.build_success_response(Dmodel.update(did=did, **kwargs))
+        return self.build_success_response(Dmodel.update(_id=_id, **kwargs))
 
     def _build_put_parser(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('did', type=str,
+                            location='json')
         parser.add_argument('name', type=str,
-                            help="{'name':'Value required'}", location='json')
+                            location='json')
         parser.add_argument('location', type=str,
-                            help="{'location':'Value required'}",
                             location='json')
         return parser

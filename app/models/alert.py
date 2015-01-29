@@ -10,6 +10,10 @@ class Alert(Base):
         super(Alert, self).__init__(*args, **kwargs)
 
     @classmethod
+    def all(cls, limit, offset):
+        return cls.wrapper().all(limit, offset)
+
+    @classmethod
     def queries(cls, pid, limit, offset, date):
         startdatetime = datetime(year=2015, month=01, day=01)
         enddatetime = datetime(year=3015, month=01, day=01)
@@ -23,5 +27,5 @@ class Alert(Base):
                                      enddatetime)
 
     @classmethod
-    def save(cls, pid, level, device):
-        return cls.wrapper().save(pid, level, device)
+    def save(cls, pid, queue, level, device):
+        return cls.wrapper().save(pid, queue, level, device)

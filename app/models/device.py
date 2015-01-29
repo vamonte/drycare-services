@@ -17,8 +17,8 @@ class Device(Base):
         return cls.wrapper().save(name, location, did)
 
     @classmethod
-    def update(cls, did, name=None, location=None):
-        return cls.wrapper().update(did, name=name, location=location)
+    def update(cls, _id, name=None, location=None, did=None):
+        return cls.wrapper().update(_id, name=name, location=location, did=did)
 
     @classmethod
     def get(cls, did):

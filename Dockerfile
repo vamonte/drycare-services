@@ -1,5 +1,5 @@
 
-FROM vamonte/uwsgi-docker
+FROM vamonte/uwsgi_docker
 MAINTAINER vamonte
 
 # Set correct environment variables.

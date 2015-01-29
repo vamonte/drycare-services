@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from gevent.queue import Queue
 
 from flask.ext.restful import Resource, reqparse
 from flask import Response
 
 from bson.json_util import dumps
+
+q = Queue()
 
 
 class BaseService(Resource):

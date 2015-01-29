@@ -9,7 +9,7 @@ class Patient(Base):
         super(Patient, self).__init__(*args, **kwargs)
 
     @classmethod
-    def save(cls, bracelet, firstname, lastname, age, weight):
+    def save(cls, bracelet, firstname, lastname, age, weight, **kwargs):
         min_consuption_day = cls.calculate_min_consuption_day(weight)
         return cls.wrapper().save(bracelet, firstname, lastname, age, weight,
                                   min_consuption_day)
@@ -28,7 +28,7 @@ class Patient(Base):
 
     @classmethod
     def update(cls, pid, firstname=None, lastname=None, age=None,
-               weight=None, bracelet=None):
+               weight=None, bracelet=None, **kwargs):
         if weight:
             min_consuption_day = cls.calculate_min_consuption_day(weight)
         else:

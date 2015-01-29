@@ -8,7 +8,8 @@ class ModellingContract(object):
 
     @staticmethod
     def device_jsonify(did, name, location):
-        return {'_id': ObjectId(did),
+        return {'_id': ObjectId(),
+                'did': did,
                 'name': name,
                 'location': location,
                 }
@@ -24,7 +25,9 @@ class ModellingContract(object):
                 'weight': weight,
                 'min_consuption_day': min_consuption_day,
                 'consumptions': consuption,
-                'alerts': alert
+                'alerts': alert,
+                'name': "{f} {l}".format(f=firstname,
+                                         l=lastname)
                 }
 
     @staticmethod

@@ -1,5 +1,6 @@
 import time
 
+from services.base import q
 from models.wrappers.mongo.base import Base
 from bson.objectid import ObjectId
 from models.wrappers.contracts import AlertContract
@@ -13,23 +14,28 @@ class MongoAlert(Base, AlertContract):
     def collection(self):
         return self.db[self.COLLECTION_NAME]
 
+    def all(self, limit, offset):
+        project = {"alerts": 1, "name": 1, "_id": 0}
+        return self._get({}, project, limit, offset)
+
     def queries(self, pid, limit, offset, startdatetime, enddatetime):
         selectors = {"$and": [self._generate_id_selectors(pid),
                               {"alerts.date": {"$gte": startdatetime,
                                                "$lt": enddatetime}}]}
-        return self._get(selectors, limit, offset)
+        project = {"alerts": 1, "_id": 0}
+        return self._get(selectors, project, limit, offset)
 
-    def save(self, pid, level, device):
+    def save(self, pid, queue, level, device):
         alert = self.jsonify(level, device)
+        q.put({"type": "alert", "object": alert})
         return self.collection.update(self._generate_id_selectors(pid),
                                       {'$push': {"alerts": alert}})
-        return alert
 
-    def _get(self, selectors, limit, offset):
+    def _get(self, selectors, project, limit, offset):
         datas = self.collection.aggregate([{"$unwind": "$alerts"},
                                            {"$match": selectors},
-                                           {"$project": {"alerts": 1,
-                                                         "_id": 0}},
+                                           {"$project": project},
+                                           {"$sort": {'alerts._id': -1}},
                                            {"$skip": offset},
                                            {"$limit": limit}
                                            ])

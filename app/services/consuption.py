@@ -18,11 +18,12 @@ class Consuptions(BaseService):
     @auth.login_required
     def get(self, pid):
         kwargs = self.get_parser.parse_args()
-        date = kwargs["date"]
-        limit = kwargs["limit"] if kwargs['limit'] else 50
+        start_date = kwargs["start_date"]
+        end_date = kwargs["end_date"]
+        limit = kwargs["limit"] if kwargs['limit'] else 500
         offset = kwargs["offset"] if kwargs["offset"] else 0
         return self.build_success_response(Cmodel.queries(pid, limit, offset,
-                                                          date))
+                                                          start_date, end_date))
 
     @auth.login_required
     def post(self, pid):
@@ -43,7 +44,8 @@ class Consuptions(BaseService):
 
     def _build_get_parser(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('date', type=inputs.date, location='args', required=False)
+        parser.add_argument('start_date', type=inputs.date, location='args', required=False)
+        parser.add_argument('end_date', type=inputs.date, location='args', required=False)
         parser.add_argument('limit', type=int, location='args', required=False)
         parser.add_argument('offset', type=int, location='args', required=False)
         return parser

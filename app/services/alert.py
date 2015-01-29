@@ -3,8 +3,28 @@ from flask.ext.restful import inputs
 
 from models.alert import Alert as Amodel
 
-from services.base import BaseService
+from services.base import BaseService, q
 from services.user import auth
+
+
+class AllAlerts(BaseService):
+
+    def __init__(self, *args, **kwargs):
+        self.get_parser = self._build_get_parser()
+        super(AllAlerts, self).__init__(*args, **kwargs)
+
+    def _build_get_parser(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('limit', type=int, location='args', required=False)
+        parser.add_argument('offset', type=int, location='args', required=False)
+        return parser
+
+    @auth.login_required
+    def get(self):
+        kwargs = self.get_parser.parse_args()
+        limit = kwargs["limit"] if kwargs['limit'] else 50
+        offset = kwargs["offset"] if kwargs["offset"] else 0
+        return self.build_success_response(Amodel.all(limit, offset))
 
 
 class Alerts(BaseService):
@@ -26,7 +46,7 @@ class Alerts(BaseService):
     @auth.login_required
     def post(self, pid):
         kwargs = self.post_parser.parse_args()
-        return self.build_success_response(Amodel.save(pid, **kwargs))
+        return self.build_success_response(Amodel.save(pid, q, **kwargs))
 
     def _build_post_parser(self):
         parser = reqparse.RequestParser()
